@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -35,7 +36,12 @@ public class BasicView extends View {
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(20);
+        paint.setStrokeCap(Paint.Cap.ROUND);
 //        canvas.drawCircle(300, 300, 200, paint);
-        canvas.drawRect(500, 500, 800, 600, paint);
+//        canvas.drawRect(500, 500, 800, 600, paint);
+//        canvas.drawPoint(500, 500, paint);
+//        RectF rectF = new RectF(50, 50, 350, 200);
+//        canvas.drawOval(rectF, paint);
+        canvas.drawLine(100, 100, 500, 500, paint);
     }
 }
