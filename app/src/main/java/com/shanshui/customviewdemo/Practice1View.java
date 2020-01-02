@@ -52,26 +52,31 @@ public class Practice1View extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         Rect rect = new Rect(0, getHeight() / 2, getWidth(), getHeight());
-        paint.setStyle(Paint.Style.STROKE);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.parseColor("#DDDDDD"));
         canvas.drawRect(rect, paint);
+        Log.e(TAG, "onDraw:1 " + rect.toString());
+        int mmCount = getWidth() / 2 / mmGap;
+        int firstOffset = getWidth() / 2 - mmCount * mmGap;
+        for (int i = 0; i < mmCount*2; i++) {
+            int startX = i * mmGap + firstOffset;
+            int startY = rect.top;
+            int endX = startX;
+            int endY;
+            float num = (currentNum - (mmCount - i) * 0.1f);
+            if (Utils.isInt(num)) {
+                endY = rect.height() / 2 + rect.top;
+                canvas.drawLine(startX, startY, endX, endY, cmPaint);
+            } else {
+                endY = rect.height() / 3 + rect.top;
+                canvas.drawLine(startX, startY, endX, endY, mmPaint);
+            }
+        }
         paint.reset();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.GREEN);
         paint.setStrokeWidth(Utils.dpToPixel(4));
         canvas.drawLine(rect.width() / 2, rect.top,
-                rect.width() / 2, rect.top + rect.height() / 2, paint);
-        Log.e(TAG, "onDraw:1 " + rect.toString());
-        int mmCount = getWidth() / mmGap;
-        for (int i = 0; i < mmCount; i++) {
-            int startX = i * mmGap;
-            int startY = rect.top;
-            int endX = startX;
-            int endY;
-            if () {
-                canvas.drawLine(startX, startY, endX, endY, mmPaint);
-            } else {
-                canvas.drawLine(startX, startY, endX, endY, cmPaint);
-            }
-        }
+                rect.width() / 2, rect.top + rect.height() * 2 / 3, paint);
     }
 }

@@ -8,4 +8,12 @@ public class Utils {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         return dp * metrics.density;
     }
+
+    public static boolean isInt(float f) {
+        int i = (int) f;
+        if (f == i) {
+            return true;
+        }
+        return false;
+    }
 }
