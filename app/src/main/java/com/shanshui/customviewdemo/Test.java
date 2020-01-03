@@ -1,5 +1,7 @@
 package com.shanshui.customviewdemo;
 
+import java.math.BigDecimal;
+
 /**
  * @author mashanshui
  * @date 2020/1/2
@@ -7,11 +9,12 @@ package com.shanshui.customviewdemo;
  */
 public class Test {
     public static void main(String[] args) {
-        float f = 2.0f;
-        int i = (int) f;
-        System.out.println(f == i);
+        float f = 2.1f;
         for (int j = 0; j < 10; j++) {
-            System.out.println(j);
+            BigDecimal b1 = new BigDecimal(Float.toString(f));
+            BigDecimal b2 = new BigDecimal(Float.toString(0.1f));
+            f = b1.add(b2).floatValue();
+            System.out.println(f);
         }
     }
 }
