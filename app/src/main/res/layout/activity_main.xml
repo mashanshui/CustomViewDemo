@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/frameLayout"
     tools:context=".MainActivity">
 
 <!--    <com.shanshui.customviewdemo.BasicView-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent" />-->
-    <com.shanshui.customviewdemo.Practice1View
+    <com.shanshui.customviewdemo.Practice1ViewGroup
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
-</LinearLayout>
+        android:layout_height="100dp" />
+<!--    <WebView-->
+<!--        android:background="#90FFC1C1"-->
+<!--        android:id="@+id/webView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
+
+<!--    <View-->
+<!--        android:background="#90FFC1C1"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
+</FrameLayout>

@@ -9,7 +9,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.ViewTreeObserver;
+import android.widget.OverScroller;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -23,16 +27,17 @@ import java.math.BigDecimal;
  */
 public class Practice1View extends View {
     private static final String TAG = "Practice1View";
-    private TextView tvSelectNum;
-    private Paint paint = new Paint();
+    //最小最大刻度值(以0.1kg为单位)
+    private int mMinScale = 464, mMaxScale = 2000;
     private Paint cmPaint;
     private Paint mmPaint;
-    private Paint titlePaint;
     private Paint sizePaint;
     private int mmGap = (int) Utils.dpToPixel(12);
     private float currentNum = 0;
-    private GestureDetector mDetector;
+    private VelocityTracker velocityTracker;
+    private OverScroller overScroller;
     private static final int scrollDistance = 6;
+    private int mMaximumVelocity, mMinimumVelocity;
 
     public Practice1View(Context context) {
         this(context, null);
@@ -44,115 +49,66 @@ public class Practice1View extends View {
     }
 
     private void initView() {
-        mDetector = new GestureDetector(getContext(), gestureListener);
+        velocityTracker = VelocityTracker.obtain();
+        overScroller = new OverScroller(getContext());
+        mMaximumVelocity = ViewConfiguration.get(getContext())
+                .getScaledMaximumFlingVelocity();
+        mMinimumVelocity = ViewConfiguration.get(getContext())
+                .getScaledMinimumFlingVelocity();
         currentNum = 60.0f;
-        tvSelectNum = new TextView(getContext());
-        tvSelectNum.setTextColor(getResources().getColor(R.color.colorPrimary));
-        tvSelectNum.setTextSize(28);
         cmPaint = new Paint();
         cmPaint.setStrokeWidth(Utils.dpToPixel(2));
         cmPaint.setColor(Color.GRAY);
         mmPaint = new Paint();
         mmPaint.setStrokeWidth(Utils.dpToPixel(1));
         mmPaint.setColor(Color.GRAY);
-        titlePaint = new Paint();
-        titlePaint.setColor(getResources().getColor(R.color.colorPrimary));
-        titlePaint.setTextSize(Utils.sp2px(36));
-        titlePaint.setTextAlign(Paint.Align.CENTER);
         sizePaint = new Paint();
         sizePaint.setTextSize(Utils.sp2px(18));
         sizePaint.setTextAlign(Paint.Align.CENTER);
+        //第一次进入，跳转到当前刻度
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                goToScale(mCurrentScale);
+            }
+        });
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Rect rect = new Rect(0, getHeight() / 2, getWidth(), getHeight());
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.parseColor("#DDDDDD"));
-        canvas.drawRect(rect, paint);
-        Log.e(TAG, "onDraw:1 " + rect.toString());
-        int mmCount = getWidth() / 2 / mmGap;
-        int firstOffset = getWidth() / 2 - mmCount * mmGap;
-        for (int i = 0; i < mmCount * 2 + 1; i++) {
-            int startX = i * mmGap + firstOffset;
-            int startY = rect.top;
+        for (int i = mMinScale; i < mMaxScale; i++) {
+            int startX = (i - mMinScale) * mmGap;
+            int startY = 0;
             int endX = startX;
             int endY;
-            BigDecimal b1 = new BigDecimal(Float.toString(currentNum));
-            BigDecimal b2 = new BigDecimal(Float.toString((mmCount - i) * 0.1f));
-            float num = b1.subtract(b2).floatValue();
-            if (Utils.isInt(num)) {
-                endY = rect.height() / 2 + rect.top;
+            if (i % 10 == 0) {
+                endY = getHeight() / 2;
                 canvas.drawLine(startX, startY, endX, endY, cmPaint);
-                String size = String.valueOf((int) num);
-                canvas.drawText(size, startX, endY + Utils.dpToPixel(32), sizePaint);
+                canvas.drawText(String.valueOf(i / 10), startX, endY + Utils.dpToPixel(32), sizePaint);
             } else {
-                endY = rect.height() / 3 + rect.top;
+                endY = getHeight() / 3;
                 canvas.drawLine(startX, startY, endX, endY, mmPaint);
             }
         }
-        paint.reset();
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(getResources().getColor(R.color.colorPrimary));
-        paint.setStrokeWidth(Utils.dpToPixel(4));
-        canvas.drawLine(rect.width() / 2, rect.top,
-                rect.width() / 2, rect.top + rect.height() * 6 / 10, paint);
-
-        canvas.drawText(String.valueOf(currentNum), rect.width() / 2, rect.top - Utils.dpToPixel(16), titlePaint);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Log.e(TAG, "onTouchEvent: ");
-        return mDetector.onTouchEvent(event);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                break;
+            default:
+                break;
+        }
+        return true;
     }
-
-    private GestureDetector.OnGestureListener gestureListener = new GestureDetector.OnGestureListener() {
-        @Override
-        public boolean onDown(MotionEvent e) {
-            Log.e(TAG, "onDown: ");
-            return true;
-        }
-
-        @Override
-        public void onShowPress(MotionEvent e) {
-
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            return false;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            Log.e(TAG, "onScroll: ");
-            if (e2.getX() - e1.getX() >= mmGap) {
-                Log.e(TAG, "onScroll:1 " + currentNum);
-                BigDecimal b1 = new BigDecimal(Float.toString(currentNum));
-                BigDecimal b2 = new BigDecimal(Float.toString(0.1f));
-                currentNum = b1.subtract(b2).floatValue();
-                Log.e(TAG, "onScroll:2 " + currentNum);
-            } else if (e1.getX() - e2.getX() >= mmGap){
-                Log.e(TAG, "onScroll:1 " + currentNum);
-                BigDecimal b1 = new BigDecimal(Float.toString(currentNum));
-                BigDecimal b2 = new BigDecimal(Float.toString(0.1f));
-                currentNum = b1.add(b2).floatValue();
-                Log.e(TAG, "onScroll:2 " + currentNum);
-            }
-            invalidate();
-            return true;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            return false;
-        }
-    };
 }
